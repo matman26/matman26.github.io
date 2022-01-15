@@ -152,7 +152,10 @@ There's a very important remark to be made here. By introducing this
 measure-and-compare mechanism into the equation, we mapped the user's intention 
 to actual actions taking place on the system. You just tell
 your system what you want a given output to be and it takes the necessary steps
-to get there.
+to get there. In this sense, we can imagine the device's configuration as
+being our Plant:
+
+![Figure: Device Configuration and State as a System to be controlled](/assets/images/device-plant.svg)
 
 To make that happen, we need the controller and a feedback function, as well as a 
 reference value. A parser can be thought of as essentially a feedback function:
@@ -179,7 +182,7 @@ The construction above depends on the reference value, and that's where you
 manifest the user or business intention. This intention can come from several
 different sources. One such example would be a YAML file where each field is
 modelled after the device configuration being maintained. Inventory systems
-systems are also valid inputs to use as reference, as they are essentially
+are also valid inputs to use as reference, as they are essentially
 where humans already go for referencing the latest state of the infrastructure.
 
 Implementing this closed loop system introducted a side-effect: whathever system
