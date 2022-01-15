@@ -3,4 +3,8 @@
 # To modify the layout, see https://jekyllrb.com/docs/themes/#overriding-theme-defaults
 
 layout: default
+title: Home
 ---
+
+# Posts
+[Effective Intent-Driven CLI Network Automation](https://matman26.github.io/2022/01/14/2022-01-14-principles-of-cli-automation.html)
