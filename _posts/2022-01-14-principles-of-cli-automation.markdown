@@ -139,7 +139,7 @@ that the system receives in order to get its output to be the reference value we
 Think of an air conditioning unit that you can control by manipulating a rheostat. 
 Whenever you switch the rheostat to a different position, a new 
 *desired temperature* level is set for your AC. The AC will compare the current room
-temperature to whathever the user set the rheostat value to. If there is a difference,
+temperature to whatever the user set the rheostat value to. If there is a difference,
 a controller system will be triggered in order to get the current temperature value
 to the desired one. This is an example of a closed-loop or feedback-based control system,
 as your AC needs to know what the current temperature is (via some temperature sensor) to
@@ -185,9 +185,9 @@ modelled after the device configuration being maintained. Inventory systems
 are also valid inputs to use as reference, as they are essentially
 where humans already go for referencing the latest state of the infrastructure.
 
-Implementing this closed loop system introducted a side-effect: whathever system
+Implementing this closed loop system introducted a side-effect: whatever system
 we use as reference for our automation instantly becomes a source-of-truth. Which
-means we can expect to see whathever is on the SoT to be the absolute truth about
+means we can expect to see whatever is on the SoT to be the absolute truth about
 what's currently happening on the network. Automation documents your network by
 simply existing.
 
