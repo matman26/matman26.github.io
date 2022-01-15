@@ -21,7 +21,7 @@ in which they present configuration data and metrics:
 + CLI devices present unstructured data in the form of text, easily readable by humans;
 + API devices present structured data in the form of XML/JSON, easily readable by machines.
 
-![Figure: Difference Between Structured and Unstructured representations](/assets/images/structured-vs-unstructured.png)
+![Figure: Difference Between Structured and Unstructured representations](/assets/images/structured-vs-unstructured.svg)
 
 Of course, one could also argue that SNMP is some sort of API that returns
 structured operational data; still, SNMP as a protocol is not intended for use
@@ -83,11 +83,10 @@ devices.
 + [NAPALM][napalm] is yet another abstraction layer on top of *Netmiko* and other platform specific libraries for different OSes, supporting protocols other than SSH (such as NETCONF) and giving you some quality-of-life features such as the ability to merge and replace configs easily, as well as emulating transactions even for platforms that wouldn't otherwise support them.
 + [Scrapli][scrapli] is quite literally a CLI Scrapper, which also offers a very sane and coherent way to handle multi-vendor networking. Scrapli is fast, flexible and allows synchronous as well as asynchronous modes of execution.
 
-If you are just starting out, I'd suggest checking out whether or not your current platform
-can be automated via NAPALM, as it's the most sane of the above alternatives. In case you
-want more control than what NAPALM gives you or your specific platform is not supported 
-(see [here][napalm-support]) then Netmiko comes as a second option. I wouldn't recommend
-using Paramiko unless you are building your own SSH connectivity tool.
+If you are just starting out, I'd suggest going with either NAPALM or Scrapli, as they are the
+most modern solutions to device connectivity. The NAPALM support matrix can be found [here][napalm-support].
+Scrapli's native support matrix can be found [here][scrapli-support], but Scrapli itself makes
+I wouldn't recommend using Paramiko unless you are building your own SSH connectivity tool.
 
 Now that we have SSH connectivity to the device via some sort of abstraction, how do we 
 send updated configuration to it or quickly process command output in a programmatic, 
@@ -203,15 +202,17 @@ this is mind one is left with more questions than answers.
 + How do we even begin to implement such a system?
 
 Tackling each of these issues is something we'll be talking about in future posts.
-For now, these questions represent very interesting exercises in network 
-programmability. For now, I'll take the academic way out and leave the solution as
-an exercise for the reader. ;)
+Right now, these questions represent very interesting exercises in network 
+programmability. Different solutions are abundant. 
+For now, I'll take the academic way out and leave figuring out the 
+details up as an exercise for the reader. ;)
 
 [paramiko]: https://pyneng.readthedocs.io/en/latest/book/18_ssh_telnet/paramiko.html
 [netmiko]: https://pyneng.readthedocs.io/en/latest/book/18_ssh_telnet/netmiko.html
 [napalm]: https://napalm.readthedocs.io/en/latest/
 [scrapli]: https://carlmontanari.github.io/scrapli/
 [napalm-support]: https://napalm.readthedocs.io/en/latest/support/index.html
+[scrapli-support]: https://carlmontanari.github.io/scrapli/user_guide/basic_usage/
 [genie]: https://developer.cisco.com/docs/genie-docs/
 [textfsm]: https://github.com/google/textfsm/wiki/TextFSM
 [ttp]: https://ttp.readthedocs.io/en/latest/
