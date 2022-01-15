@@ -21,6 +21,8 @@ in which they present configuration data and metrics:
 + CLI devices present unstructured data in the form of text, easily readable by humans;
 + API devices present structured data in the form of XML/JSON, easily readable by machines.
 
+![Figure: Difference Between Structured and Unstructured representations](/assets/images/structured-vs-unstructured.png)
+
 Of course, one could also argue that SNMP is some sort of API that returns
 structured operational data; still, SNMP as a protocol is not intended for use
 as a configuration management solution, which leaves us with read-only 
@@ -39,14 +41,14 @@ automate repetitive tasks on interactive terminal applications. An expect script
 as its name implies, will go back-and-forth between sending text to an application
 and waiting (i.e. expecting) for the application to output something.
 
-![Read-only Automation with Expect](/assets/images/expect-read-only.png)
+![Figure: Read-only Automation with Expect](/assets/images/expect-read-only.png)
 
 Of course, this workflow is very low-level in nature, as a network automation developer
 you will need to predict the format of the data the device is going to return (such
 as what its prompt looks like) and also manage buffers (the expect buffer is limited,
 which makes it not ideal for processing large chunks of output or input).
 
-Not only that, expect scripts are an example of `ad-hoc` automation. They are meant
+Not only that, expect scripts are an example of _ad-hoc_ automation. They are meant
 as a way to automate the one very specific configuration task they were written to automate;
 expect will often break down when specific conditions are not met or when requirements 
 change slightly. They may be enough for automating configuration backups, but what
@@ -55,7 +57,7 @@ and that policy will depend on a combination of the Interface's supported bandwi
 and the interface description? Expect becomes convoluted very quickly
 the more logic you try to add.
 
-![Read-Write Automation with Expect](/assets/images/read-write-expect-automation.png)
+![Figure: Read-Write Automation with Expect](/assets/images/read-write-expect-automation.png)
 
 As such, expect scripts become problem-specific, they also often still rely
 on some human running the script from a CLI, together with maybe an argument
@@ -70,7 +72,7 @@ _applications_.
 Let's suppose you graduated from Expect and Bash into some sort of high-level programming language. 
 I'll be using Python as an example as that's the choice of most Network Automation 
 developers in the community. With Python, you'll find no shortage of amazing libraries 
-to fit your automation needs (which I'll link in the references below).
+to fit your automation needs.
 
 First, instead of using expect to handle the low-level conversation to the device
 yourself, Python has a few higher-level libraries that handle SSH connections to 
@@ -79,6 +81,7 @@ devices.
 + [Paramiko][paramiko] is the most basic SSH implementation for Python, making it what other libraries depend on;
 + [Netmiko][netmiko] is built on top of *Paramiko*. *Netmiko* abstracts away some of the low-level details of *Paramiko* to provide a consistent way to interact with Network Devices from several different vendors;
 + [NAPALM][napalm] is yet another abstraction layer on top of *Netmiko* and other platform specific libraries for different OSes, supporting protocols other than SSH (such as NETCONF) and giving you some quality-of-life features such as the ability to merge and replace configs easily, as well as emulating transactions even for platforms that wouldn't otherwise support them.
++ [Scrapli][scrapli] is quite literally a CLI Scrapper, which also offers a very sane and coherent way to handle multi-vendor networking. Scrapli is fast, flexible and allows synchronous as well as asynchronous modes of execution.
 
 If you are just starting out, I'd suggest checking out whether or not your current platform
 can be automated via NAPALM, as it's the most sane of the above alternatives. In case you
@@ -111,13 +114,15 @@ We can cite as templating libraries:
 + [Jinja2][jinja], a templating language often used in combination with Ansible and Flask;
 + [Mako][mako], a flexible templating language that supports python expressions inside templates.
 
-When trying to explain where each one goes in the automation toolkit, I came up with
-the following diagram:
+Since parsers allow us to have a structured representation of the device's configuration
+inside our applicatio, we can use this to our advantage to implement idempotent changes:
++ The controller should only act on the device if something needs to be changed
 
-![Idempotence via Parsing](/assets/images/idempotent-automation.png)
+When trying to build a figure to explain that, that's what I came up with:
+![Figure: Idempotence via Parsing](/assets/images/idempotent-automation.png)
 
 That's when I realized why defining automation concepts like this felt so natural. 
-Network Automation workflows are essentially control systems in disguise; I've had three
+Network Automation workflows are essentially control systems in disguise! I've had three
 semesters of that back in college!
 
 ## Control Theory
@@ -131,7 +136,7 @@ that the system receives in order to get its output to be the reference value we
 ![Plant to be Controlled](/assets/images/control-system-plant.png)
 
 Think of an air conditioning unit that you can control by manipulating a rheostat. 
-Whenever you switch the rheostat to a different temperature level, a new 
+Whenever you switch the rheostat to a different position, a new 
 *desired temperature* level is set for your AC. The AC will compare the current room
 temperature to whathever the user set the rheostat value to. If there is a difference,
 a controller system will be triggered in order to get the current temperature value
@@ -148,29 +153,33 @@ to actual actions taking place on the system. You just tell
 your system what you want a given output to be and it takes the necessary steps
 to get there.
 
-To make that happen, we need the controller and a feedback function, as well as your 
-reference value. The parser module can be thought of as essentially a feedback function:
+To make that happen, we need the controller and a feedback function, as well as a 
+reference value. A parser can be thought of as essentially a feedback function:
 its job is to read unstructured data and return structured data that we can
-make comparisons to inside our code. It's in our comparison logic and business logic
-that we can then make decisions. What should happen if the device does not have
-an NTP server setup? Should we add a block of NTP configuration to its candidate config?
+make comparisons to inside our code, just like how a temperature sensor translates
+the current temperature to a voltage value that your circuit can then work with.
+
+It's in our comparison logic and business logic that we can then make decisions.
+What should happen if the device does not have an NTP server setup? Should we ad
+d a block of NTP configuration to its candidate config?
 
 This decision and many others have to be taken at the controller-level, as they
 will essentially define the capabilities of your controller. They need to take
 into account current business needs and common issues. Every network is different.
+
 Once a decision has been made on how to generate a new configuration to the device,
 we should then send it. Let's remember our Python script sees only structured data,
 so we use a templating engine to convert that structured data back into a block of
-configuration the device itself can read, thus closing our automation loop.
+configuration that can be sent to the device, thus closing our automation loop.
 
 ![Closed-Loop Controller](/assets/images/intent-based-controller.png)
 
 The construction above depends on the reference value, and that's where you
 manifest the user or business intention. This intention can come from several
 different sources. One such example would be a YAML file where each field is
-modelled after the device configuration being maintained. Source-of-Truth
+modelled after the device configuration being maintained. Inventory systems
 systems are also valid inputs to use as reference, as they are essentially
-where humans already go for referencing the infrastructure state.
+where humans already go for referencing the latest state of the infrastructure.
 
 Implementing this closed loop system introducted a side-effect: whathever system
 we use as reference for our automation instantly becomes a source-of-truth. Which
@@ -180,28 +189,28 @@ simply existing.
 
 Of course, once such controller is in place, you are free to enforce new configurations on 
 your network by simply setting a new _desired configuration_ for your controller and 
-letting it handle the configurations. 
+letting it handle the configurations.
 
 # Conclusions
 The idea of this article was to mainly present a high-level overview on how to 
-see the issue of cli automation from the lenses of control theory. Of course, having
-this is mind one is left with more questions than answers. How do we model data
-inside our controller? How to interact with external systems and receive input from those?
-How to improve performance when working with a large set of devices?
-
-Delegating inventory modelling to a set of text files introduces the possibility of 
-version control. Automation can then be based around having a central 
-network-as-code repository where changes to desired configuration can be 
-tracked and validated by network administrators.
+see the issue of CLI automation from the lenses of control theory. Of course, having
+this is mind one is left with more questions than answers. 
++ How do we model data inside our controller? 
++ How to include version-control on your controller to track and validate configuration changes?
++ How to interact with external systems and receive input from those?
++ How to improve performance when working with a large set of devices?
++ How to introduce observability into this workflow?
++ How do we even begin to implement such a system?
 
 Tackling each of these issues is something we'll be talking about in future posts.
 For now, these questions represent very interesting exercises in network 
-programmability. As any good academic would say, proof of these concepts is left as
+programmability. For now, I'll take the academic way out and leave the solution as
 an exercise for the reader. ;)
 
 [paramiko]: https://pyneng.readthedocs.io/en/latest/book/18_ssh_telnet/paramiko.html
 [netmiko]: https://pyneng.readthedocs.io/en/latest/book/18_ssh_telnet/netmiko.html
 [napalm]: https://napalm.readthedocs.io/en/latest/
+[scrapli]: https://carlmontanari.github.io/scrapli/
 [napalm-support]: https://napalm.readthedocs.io/en/latest/support/index.html
 [genie]: https://developer.cisco.com/docs/genie-docs/
 [textfsm]: https://github.com/google/textfsm/wiki/TextFSM
