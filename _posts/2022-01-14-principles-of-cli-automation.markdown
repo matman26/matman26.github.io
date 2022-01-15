@@ -2,6 +2,7 @@
 layout: post
 title:  "Effective Intent-Driven CLI-Based Network Automation"
 date:   2022-01-14 12:00:00 -0300
+permalink: /:title
 ---
 
 # Effective Intent-Driven CLI Network Automation
