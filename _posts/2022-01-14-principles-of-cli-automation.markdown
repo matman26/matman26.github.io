@@ -1,9 +1,9 @@
 ---
 layout: default
-title:  "Effective Intent-Driven CLI-Based Network Automation"
+title:  "Effective Intent-Driven Network Automation on CLI Devices"
 date:   2022-01-14 12:00:00 -0300
 permalink: /posts/intent-based-automation
-image: /assets/images/intent-based-controller.png
+image: /assets/images/intent-based-cli-devices-controller.png
 ---
 
 We've all been there. Your company may have that older set of routers with
