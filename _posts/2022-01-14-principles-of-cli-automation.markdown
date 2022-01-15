@@ -41,7 +41,7 @@ automate repetitive tasks on interactive terminal applications. An expect script
 as its name implies, will go back-and-forth between sending text to an application
 and waiting (i.e. expecting) for the application to output something.
 
-![Figure: Read-only Automation with Expect](/assets/images/expect-read-only.png)
+![Figure: Read-only Automation with Expect](/assets/images/expect-read-only.svg)
 
 Of course, this workflow is very low-level in nature, as a network automation developer
 you will need to predict the format of the data the device is going to return (such
@@ -57,7 +57,7 @@ and that policy will depend on a combination of the Interface's supported bandwi
 and the interface description? Expect becomes convoluted very quickly
 the more logic you try to add.
 
-![Figure: Read-Write Automation with Expect](/assets/images/read-write-expect-automation.png)
+![Figure: Read-Write Automation with Expect](/assets/images/read-write-expect-automation.svg)
 
 As such, expect scripts become problem-specific, they also often still rely
 on some human running the script from a CLI, together with maybe an argument
@@ -86,7 +86,8 @@ devices.
 If you are just starting out, I'd suggest going with either NAPALM or Scrapli, as they are the
 most modern solutions to device connectivity. The NAPALM support matrix can be found [here][napalm-support].
 Scrapli's native support matrix can be found [here][scrapli-support], but Scrapli itself makes
-I wouldn't recommend using Paramiko unless you are building your own SSH connectivity tool.
+it very simple to add support for different network vendors. I wouldn't recommend using 
+Paramiko unless you are building your own SSH connectivity tool.
 
 Now that we have SSH connectivity to the device via some sort of abstraction, how do we 
 send updated configuration to it or quickly process command output in a programmatic, 
@@ -114,11 +115,11 @@ We can cite as templating libraries:
 + [Mako][mako], a flexible templating language that supports python expressions inside templates.
 
 Since parsers allow us to have a structured representation of the device's configuration
-inside our applicatio, we can use this to our advantage to implement idempotent changes:
+inside our application, we can use this to our advantage to implement idempotent changes:
 + The controller should only act on the device if something needs to be changed
 
 When trying to build a figure to explain that, that's what I came up with:
-![Figure: Idempotence via Parsing](/assets/images/idempotent-automation.png)
+![Figure: Idempotence via Parsing](/assets/images/idempotent-automation.svg)
 
 That's when I realized why defining automation concepts like this felt so natural. 
 Network Automation workflows are essentially control systems in disguise! I've had three
@@ -132,7 +133,7 @@ Air Conditioning unit, for example. The system we wish to control is called
 the Plant. By 'Controlling a System', we mean to manipulate some sort of input
 that the system receives in order to get its output to be the reference value we want.
 
-![Plant to be Controlled](/assets/images/control-system-plant.png)
+![Figure: Plant to be Controlled](/assets/images/control-system-plant.svg)
 
 Think of an air conditioning unit that you can control by manipulating a rheostat. 
 Whenever you switch the rheostat to a different position, a new 
@@ -143,7 +144,7 @@ to the desired one. This is an example of a closed-loop or feedback-based contro
 as your AC needs to know what the current temperature is (via some temperature sensor) to
 be able to know whether or not it should increase voltage fed to the AC or lower it.
 
-![A Controller for Room Temperature](/assets/images/feedback-ac-controller.png)
+![Figure: A Controller for Room Temperature](/assets/images/feedback-ac-controller.svg)
 
 ## Feedback Loops introduce Intent
 There's a very important remark to be made here. By introducing this 
@@ -171,7 +172,7 @@ we should then send it. Let's remember our Python script sees only structured da
 so we use a templating engine to convert that structured data back into a block of
 configuration that can be sent to the device, thus closing our automation loop.
 
-![Closed-Loop Controller](/assets/images/intent-based-controller.png)
+![Closed-Loop Controller](/assets/images/intent-based-controller.svg)
 
 The construction above depends on the reference value, and that's where you
 manifest the user or business intention. This intention can come from several
