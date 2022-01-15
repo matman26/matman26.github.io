@@ -80,14 +80,15 @@ devices.
 
 + [Paramiko][paramiko] is the most basic SSH implementation for Python, making it what other libraries depend on;
 + [Netmiko][netmiko] is built on top of *Paramiko*. *Netmiko* abstracts away some of the low-level details of *Paramiko* to provide a consistent way to interact with Network Devices from several different vendors;
-+ [NAPALM][napalm] is yet another abstraction layer on top of *Netmiko* and other platform specific libraries for different OSes, supporting protocols other than SSH (such as NETCONF) and giving you some quality-of-life features such as the ability to merge and replace configs easily, as well as emulating transactions even for platforms that wouldn't otherwise support them.
++ [NAPALM][napalm] is yet another abstraction layer on top of *Netmiko* and other platform specific libraries for different OSes, supporting protocols other than SSH (such as NETCONF) and giving you some quality-of-life features such as the ability to merge and replace configs easily, as well as emulating transactions even for platforms that wouldn't otherwise support them;
 + [Scrapli][scrapli] is quite literally a CLI Scrapper, which also offers a very sane and coherent way to handle multi-vendor networking. Scrapli is fast, flexible and allows synchronous as well as asynchronous modes of execution.
 
 If you are just starting out, I'd suggest going with either NAPALM or Scrapli, as they are the
 most modern solutions to device connectivity. The NAPALM support matrix can be found [here][napalm-support].
 Scrapli's native support matrix can be found [here][scrapli-support], but Scrapli itself makes
-it very simple to add support for different network vendors. I wouldn't recommend using 
-Paramiko unless you are building your own SSH connectivity tool.
+it very simple to add support for different network vendors. Netmiko can be used when you need
+more control over how to handle connectivity to your devices, but I wouldn't recommend using 
+Paramiko unless you are building your own SSH connectivity tool on top of it.
 
 Now that we have SSH connectivity to the device via some sort of abstraction, how do we 
 send updated configuration to it or quickly process command output in a programmatic, 
@@ -160,8 +161,8 @@ make comparisons to inside our code, just like how a temperature sensor translat
 the current temperature to a voltage value that your circuit can then work with.
 
 It's in our comparison logic and business logic that we can then make decisions.
-What should happen if the device does not have an NTP server setup? Should we ad
-d a block of NTP configuration to its candidate config?
+What should happen if the device does not have an NTP server setup? Should we add 
+a block of NTP configuration to its candidate config?
 
 This decision and many others have to be taken at the controller-level, as they
 will essentially define the capabilities of your controller. They need to take
