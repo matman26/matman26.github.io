@@ -1,8 +1,8 @@
 ---
-layout: post
+layout: default
 title:  "Effective Intent-Driven CLI-Based Network Automation"
 date:   2022-01-14 12:00:00 -0300
-permalink: /testing
+permalink: /posts/intent-based-automation
 ---
 
 # Effective Intent-Driven CLI Network Automation
