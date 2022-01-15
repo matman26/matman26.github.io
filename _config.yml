@@ -17,14 +17,14 @@ title: Matheus Augusto da Silva
 email: a.matheus26@hotmail.com
 description: >- # this means to ignore newlines until "baseurl:"
    Winging Network Automation like a champ.
-baseurl: "matman26" # the subpath of your site, e.g. /blog
+baseurl: "" # the subpath of your site, e.g. /blog
 url: "" # the base hostname & protocol for your site, e.g. http://example.com
 twitter_username:
 github_username:  matman26
 
 # Build settings
 markdown: kramdown
-theme: minima
+theme: jekyll-theme-minima
 plugins:
   - jekyll-feed
 
