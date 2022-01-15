@@ -103,13 +103,13 @@ of their configuration, this allows our application to see data as if it came fr
 a structured source.
 
 Python has libraries for doing both operations. The most common parsers you'll see are:
-+ [Genie][https://developer.cisco.com/docs/genie-docs/], a component of Cisco's PyATS ecosystem;
-+ [TextFSM][https://github.com/google/textfsm/wiki/TextFSM], a parsing library developed by Google;
-+ [TTP][https://ttp.readthedocs.io/en/latest/], an easy-to-use yet very powerful parsing library.
++ [Genie][genie], a component of Cisco's PyATS ecosystem;
++ [TextFSM][textfsm], a parsing library developed by Google;
++ [TTP][ttp], an easy-to-use yet very powerful parsing library.
 
 We can cite as templating libraries:
-+ [Jinja2][https://jinja.palletsprojects.com/en/3.0.x/], a templating language often used in combination with Ansible and Flask;
-+ [Mako][https://www.makotemplates.org/], a flexible templating language that supports python expressions inside templates.
++ [Jinja2][jinja], a templating language often used in combination with Ansible and Flask;
++ [Mako][mako], a flexible templating language that supports python expressions inside templates.
 
 When trying to explain where each one goes in the automation toolkit, I came up with
 the following diagram:
@@ -119,10 +119,14 @@ the following diagram:
 That's when I realized why defining automation concepts like this felt so natural. 
 Network Automation workflows are essentially control systems in disguise; I've had three
 semesters of that back in college!
+
 ## Control Theory
-The basic concept of Control Theory is the Plant. The plant is essentially a 
-black-box representing a system or a process that you have control over via 
-some kind of variable. 
+Control Theory is an engineering discipline that focuses on Controlling Systems.
+By System, we mean any kind of object, process or behavior that we have control
+over; the system could be the room temperature if we wished to control it via an
+Air Conditioning unit, for example. The system we wish to control is called 
+the Plant. By 'Controlling a System', we mean to manipulate some sort of input
+that the system receives in order to get its output to be the reference value we want.
 
 ![Plant to be Controlled](/assets/images/control-system-plant.png)
 
@@ -199,3 +203,8 @@ an exercise for the reader. ;)
 [netmiko]: https://pyneng.readthedocs.io/en/latest/book/18_ssh_telnet/netmiko.html
 [napalm]: https://napalm.readthedocs.io/en/latest/
 [napalm-support]: https://napalm.readthedocs.io/en/latest/support/index.html
+[genie]: https://developer.cisco.com/docs/genie-docs/
+[textfsm]: https://github.com/google/textfsm/wiki/TextFSM
+[ttp]: https://ttp.readthedocs.io/en/latest/
+[jinja]: https://jinja.palletsprojects.com/en/3.0.x/
+[mako]: https://www.makotemplates.org/
