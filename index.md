@@ -7,4 +7,4 @@ title: Home
 ---
 
 # Posts
-[Effective Intent-Driven CLI Network Automation](https://matman26.github.io/2022-01-14-principles-of-cli-automation.html)
+[Effective Intent-Driven CLI Network Automation](https://matman26.github.io/posts/intent-based-automation)
