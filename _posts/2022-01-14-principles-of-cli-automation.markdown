@@ -37,7 +37,7 @@ automate repetitive tasks on interactive terminal applications. An expect script
 as its name implies, will go back-and-forth between sending text to an application
 and waiting (i.e. expecting) for the application to output something.
 
-![Read-only Automation with Expect]({{site.baseurl}}/docs/assets/images/expect-read-only.png)
+![Read-only Automation with Expect](/assets/images/expect-read-only.png)
 
 Of course, this workflow is very low-level in nature, as a network automation developer
 you will need to predict the format of the data the device is going to return (such
@@ -53,7 +53,7 @@ and that policy will depend on a combination of the Interface's supported bandwi
 and the interface description? Expect becomes too convoluted very quickly
 the more logic you try to add.
 
-![Read-Write Automation with Expect]({{site.baseurl}}/docs/assets/images/read-write-expect-automation.png)
+![Read-Write Automation with Expect](/assets/images/read-write-expect-automation.png)
 
 As such, expect scripts become problem-specific, they also often still rely
 on some human running the script from a CLI, together with maybe an argument
@@ -109,7 +109,7 @@ We can cite as templating libraries:
 When trying to explain where each one goes in the automation toolkit, I came up with
 the following diagram:
 
-![Idempotence via Parsing]({{site.baseurl}}/docs/assets/images/idempotent-automation.png)
+![Idempotence via Parsing](/assets/images/idempotent-automation.png)
 
 That's when I realized why defining automation concepts like this felt so natural. 
 Network Automation workflows are essentially control systems in disguise; I've had three
@@ -119,7 +119,7 @@ The basic concept of Control Theory is the Plant. The plant is essentially a
 black-box representing a system or a process that you have control over via 
 some kind of variable. 
 
-![Plant to be Controlled]({{site.baseurl}}/docs/assets/images/control-system-plant.png)
+![Plant to be Controlled](/assets/images/control-system-plant.png)
 
 Think of an air conditioning unit that you can control by manipulating a rheostat. 
 Whenever you switch the rheostat to a different temperature level, a new 
@@ -130,7 +130,7 @@ to the desired one. This is an example of a closed-loop or feedback-based contro
 as your AC needs to know what the current temperature is (via some temperature sensor) to
 be able to know whether or not it should increase voltage fed to the AC or lower it.
 
-![A Controller for Room Temperature]({{site.baseurl}}/docs/assets/images/feedback-ac-controller.png)
+![A Controller for Room Temperature](/assets/images/feedback-ac-controller.png)
 
 ## Feedback Loops introduce Intent
 There's a very important remark to be made here. By introducing this 
@@ -139,7 +139,7 @@ to actual actions taking place on the system. You just tell
 your system what you want a given output to be and it takes the necessary steps
 to get there.
 
-![Closed-Loop Controller]({{site.baseurl}}/docs/assets/images/intent-based-controller.png)
+![Closed-Loop Controller](/assets/images/intent-based-controller.png)
 
 In this block diagram it's clear that we can think of a parser as a component that
 gets the current, plain-text configuration of the device and turns it into 
