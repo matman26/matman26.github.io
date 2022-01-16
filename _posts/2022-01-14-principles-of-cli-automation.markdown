@@ -185,8 +185,8 @@ modelled after the device configuration being maintained. Inventory systems
 are also valid inputs to use as reference, as they are essentially
 where humans already go for referencing the latest state of the infrastructure.
 
-Implementing this closed loop system introducted a side-effect: whatever system
-we use as reference for our automation instantly becomes a source-of-truth. Which
+Implementing a closed-loop system introduces a side-effect: whatever system
+we use as reference for our automation instantly becomes a source-of-truth. This
 means we can expect to see whatever is on the SoT to be the absolute truth about
 what's currently happening on the network. Automation documents your network by
 simply existing.
