@@ -3,7 +3,7 @@ layout: default
 title:  "TTP: Practical, Digestible, Model-Driven Text Parser"
 date:   2022-01-22 12:00:00 -0300
 permalink: /posts/ttp-practical-digestible-model-driven-parser
-image: /assets/images/intent-based-controller.png
+image: /assets/images/ttp-parser.svg
 ---
 
 # Intro to Text Parsing
@@ -233,10 +233,19 @@ can say that template we'd made models all of our interfaces through four values
 
 As such, we can emulate model-driven automation by passing all of our CLI output
 through a parser that can then return information compliant with a coherent 
-data-model across all of our interfaces.
+data-model across all of our interfaces. Going back to our initial example with 
+`show ip interface brief`, we can devise the following parser template:
+
+{% highlight html %}
+{% raw %}
+<group method="table" name="{{interface}}">
+{{ interface }} {{ ip_address }} {{ ok }} {{ method }} {{ admin_status }} {{ oper_status }}
+</group>
+{% endraw %}
+{% endhighlight %}
 
 ## Groups
-Groups allow us to add hierarchies to our 
+Groups allow us to add hierarchies to our data models.
 
 ## Groups
 
