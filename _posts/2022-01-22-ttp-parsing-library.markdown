@@ -19,7 +19,7 @@ a long sequence of pipes, awks and greps to get the information
 you need. Worse still, it may be you need not one but several of 
 the fields contained within a block of text. Let's take a look
 at the output you'd get from typing a `show ip interface brief`
-on a Cisco IOS XE device:
+on a Cisco IOS device:
 
 ```bash
 # show_ip_interface_brief.txt
@@ -97,7 +97,12 @@ or [TTP][ttp]. If you're looking for alternatives, you can also take a look at o
 libraries:
 
 + Cisco [Genie][genie], the parsing module for PyATS.
-+ [TextFSM][textfsm], a parsing library developed by google.
++ [TextFSM][textfsm], a parsing library developed by Google.
+
+As I mentioned in a [previous post][cli-automation], one can see _parsing_ as essentially the process
+of taking plain text and turning it into structured data. In the context of Python,
+this would usually be a combination of **lists** and **dictionaries**. TTP in particular
+can also serialize parsed data into formats such as _csv_, _json_ and others.
 
 
 # TTP
@@ -106,6 +111,74 @@ that you can only use it for the simplest of tasks; TTP also has advanced featur
 templating, macros and support for multiple output formats. We'll be taking a look at
 those soon.
 
+For now, let's try to solve our original issue with TTP; the ideia was to collect interface each
+interface's status from **show ip interface brief**. In TTP, rather than writing long regular
+expressions to match specific fields (we still can do that, but in most basic cases we 
+aren't required to), we just specify a template with placeholders that TTP can use to understand
+what the text output looks like.
+What I mean by that is: 
++ We write a base template that specifies the _format_ in which our parser is to expect data
++ We put placeholders inside our template that will be matched and collected by TTP
+
+To get a feel for how that works, let's take look at how to extract
+interface descriptions and ip addresses from **show run interface**
+
+```
+csr1000v-1#show run interface GigabitEthernet 1
+Building configuration...
+
+Current configuration : 171 bytes
+!
+interface GigabitEthernet1
+ description MANAGEMENT INTERFACE - DON'T TOUCH ME
+ ip address 10.10.20.48 255.255.255.0
+ negotiation auto
+ no mop enabled
+ no mop sysid
+end
+```
+
+There is a _textual pattern_ to this block of configuration:
++ After the keyword _interface_, we can expect to see an interface name
++ After the keyword _description_, we can expect to see its description
++ After _ip address_, we expect to see first the IPv4 Address and then its subnet mask
+
+We can account for that pattern by copy and pasting the above output into a text
+editor and replacing the information we want to collect with placeholders.
+
+```
+interface {{ interface_name }}
+ description {{ description | ORPHRASE }}
+ ip address {{ ip_address | IP }} {{ subnet_mask }}
+end
+```
+
+The above syntax may remind some of you of Jinja syntax. TTP Templates have some
+similar ideias to Jinja but are meant to do the exact opposite operation: while
+Jinja produces text, TTP reverse-engineers text into structured data. We can
+name the data to be extracted using the `{{ <variable-name> }}` construction. Notice
+we used the `ORPHRASE` and `IP` filters to be intentional about our collection.
++ The `ORPHRASE` filter matches a word or phrase; interface descriptions may be multiple words in length.
++ The `IP` filter matches an IPv4 Address in dot-notation.
+
+Behind the scenes, filters like `IP` and `ORPHRASE` are just regular expressions
+bundled with TTP so you don't need to build recurring patterns yourself. You
+can always create your own Regular Expressions and use them as filters, but we'll
+talk about that later. Parsing the original output with our template will 
+yield the following result in **json** format:
+
+```json
+[
+    {
+        "description": "MANAGEMENT INTERFACE - DON'T TOUCH ME",
+        "interface_name": "GigabitEthernet1",
+        "ip_address": "10.10.20.48",
+        "subnet_mask": "255.255.255.0"
+    }
+]
+```
+
+
 ## Basic Structure
 
 ## Groups
@@ -113,6 +186,7 @@ those soon.
 ## Groups
 
 
+[cli-automation]: https://matman26.github.io/posts/intent-based-cli-devices-controller
 [regex101]: https://regex101.com/r/KYzHix/1
 [genie]: https://developer.cisco.com/docs/genie-docs/
 [textfsm]: https://github.com/google/textfsm/wiki/TextFSM
