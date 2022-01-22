@@ -111,7 +111,7 @@ that you can only use it for the simplest of tasks; TTP also has advanced featur
 templating, macros and support for multiple output formats. We'll be taking a look at
 those soon.
 
-For now, let's try to solve our original issue with TTP; the ideia was to collect interface each
+For now, let's try to solve our original issue with TTP; the ideia was to collect each
 interface's status from **show ip interface brief**. In TTP, rather than writing long regular
 expressions to match specific fields (we still can do that, but in most basic cases we 
 aren't required to), we just specify a template with placeholders that TTP can use to understand
@@ -180,10 +180,63 @@ yield the following result in **json** format:
 ]
 ```
 
+The beauty of TTP lies in the fact that it's pretty good at grouping data from 
+same-level hierarchies. In our above case, we have a flat hierarchy (no nested
+data structures, just plain key-value pairs for each interface). The fact that 
+the four values are being grouped becomes even more apparent if we feed this 
+same parser the output from `show run | section interface`:
 
-## Basic Structure
+```json
+[
+    [
+        {
+            "description": "MANAGEMENT INTERFACE - DON'T TOUCH ME",
+            "interface_name": "GigabitEthernet1",
+            "ip_address": "10.10.20.48",
+            "subnet_mask": "255.255.255.0"
+        },
+        {
+            "description": "Network Interface",
+            "interface_name": "GigabitEthernet2"
+        },
+        {
+            "interface_name": "GigabitEthernet3"
+        },
+        {
+            "description": "Loopback",
+            "interface_name": "Loopback21"
+        },
+        {
+            "description": "Test Loopback",
+            "interface_name": "Loopback2050",
+            "ip_address": "192.168.50.10",
+            "subnet_mask": "255.255.255.0"
+        }
+    ]
+]
+
+```
+
+Notice that the same parser template could handle the single-interface case as well
+as the multiple-interface case.
+
+The parser was able to detect a semi-structure to the text thanks to the way we defined
+our template. Since it saw the 'structure' we established beginning with `interface ...`
+five times, it generated five different dictionaries, one for each of the interfaces.
+
+Notice that the naming convention we chose to represent our data matters. In a way, we
+can say that template we'd made models all of our interfaces through four values:
++ **interface_name**, the name of the interface;
++ **description**, the interface's description;
++ **ip_address**, the interface's IPv4 Address;
++ **subnet_mask**, the interface's IPv4 Subnet Mask.
+
+As such, we can emulate model-driven automation by passing all of our CLI output
+through a parser that can then return information compliant with a coherent 
+data-model across all of our interfaces.
 
 ## Groups
+Groups allow us to add hierarchies to our 
 
 ## Groups
 
