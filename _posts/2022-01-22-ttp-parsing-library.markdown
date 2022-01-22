@@ -9,8 +9,8 @@ image: /assets/images/intent-based-controller.png
 # Intro to Text Parsing
 When interacting with Network Devices, one of the first challenges
 aspiring Network Automation engineers must face is how to read data 
-coming from the CLI in a programmatic way. In this context, the 
-very process of extracting data from text can be seen as _text parsing_.
+coming from the CLI in a programmatic way. This process is often 
+referred to as _text parsing_.
 
 Bash Scripting usually relies on Unix text processors like Awk,
 Grep and Sed in order to extract data from plain text, but even 
@@ -19,7 +19,7 @@ a long sequence of pipes, awks and greps to get the information
 you need. Worse still, it may be you need not one but several of 
 the fields contained within a block of text. Let's take a look
 at the output you'd get from typing a `show ip interface brief`
-on a Cisco IOS device:
+on a Cisco IOS XE device:
 
 ```bash
 # show_ip_interface_brief.txt
@@ -57,16 +57,16 @@ up
 Not exactly what we wanted.
 
 An alternative would be to use some sort of regular expression matching. We can determine
-a pattern from the text an write a Regular expression that will match specific patterns like 
+a pattern from the text and write a Regular expression that will match specific patterns like 
 IP addresses, hostnames, interface names and status keywords.
 
 The following expression, for example, can be used to identify a Cisco Interface name.
 
 ```python
-# [A-Z] means the string can begin with any uppercase character
-# [A-Za-z]+ means we can have one or more upper and lower case charaters
+# ^[A-Z] means the string can begin with any uppercase character
+# [A-Za-z]+ means we can have one or more upper and lower case characters
 # [/0-9]+ means we can have a combination of numbers and slashes 
-[A-Z][A-Za-z]+[/0-9]+
+^[A-Z][A-Za-z]+[/0-9]+
 ```
 
 By extension, one Regular expression that would match all fields in the file `show_ip_interface_brief.txt`
@@ -83,10 +83,34 @@ expression above. In this case the output of `show ip interface brief` begins wi
 each interface! We follow that with a Regular expressions that matches either IP addresses or 
 the 'unassigned' value. I won't explain the whole regular expression but you can probably get an
 idea that building this was a lot of work. This Regular expression sets capture groups for all of the
-six fields on the output, so it is an improvement over a naive usage of Awk. Still, there should be
-a better way, right?
+six fields on the output, so it is an improvement over a naive usage of Awk. Capture group 1 will
+contain the matched interface name, capture group 2 will contain the matched IP address, and capture
+group 5 would have the _status_ value we wanted for each line.
 
-# Enter Parsing Libraries
+Still, there _must_ be a better way, right?
+
+## Enter Parsing Libraries
+Parsing Libraries are meant as a way to faciliate and abstract away the scary nuances of Regular
+Expressions and provide a simplified way to gather data from text. While several libraries exist
+across a multitude of Programming Languages, I'll be focusing on Python's **Template Text Parser**
+or [TTP][ttp]. If you're looking for alternatives, you can also take a look at other parsing
+libraries:
+
++ Cisco [Genie][genie], the parsing module for PyATS.
++ [TextFSM][textfsm], a parsing library developed by google.
+
+
+# TTP
+TTP is at its core a very user-friendly Parsing library. Don't let that fool you into thinking
+that you can only use it for the simplest of tasks; TTP also has advanced features such as parser
+templating, macros and support for multiple output formats. We'll be taking a look at
+those soon.
+
+## Basic Structure
+
+## Groups
+
+## Groups
 
 
 [regex101]: https://regex101.com/r/KYzHix/1
