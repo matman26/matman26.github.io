@@ -146,7 +146,7 @@ There is a _textual pattern_ to this block of configuration:
 We can account for that pattern by copy and pasting the above output into a text
 editor and replacing the information we want to collect with placeholders.
 
-{% highlight %}
+{% highlight html %}
 {% raw %}
 interface {{ interface_name }}
  description {{ description | ORPHRASE }}
