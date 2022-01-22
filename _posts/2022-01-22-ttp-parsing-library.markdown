@@ -239,16 +239,89 @@ data-model across all of our interfaces. Going back to our initial example with
 {% highlight html %}
 {% raw %}
 <group method="table" name="{{interface}}">
-{{ interface }} {{ ip_address }} {{ ok }} {{ method }} {{ admin_status }} {{ oper_status }}
+Interface              IP-Address      OK? Method Status                Protocol {{ _start_ }}
+{{ interface }} {{ ip_address }} {{ ok }} {{ method }} {{ admin_status | ORPHRASE }} {{ oper_status }}
 </group>
 {% endraw %}
 {% endhighlight %}
 
-## Groups
-Groups allow us to add hierarchies to our data models.
+Notice we added a <group> tag our new parser. This is something we'll elaborate on 
+in the following section. Just like last time, we essentially copy-pasted the whole
+table and replaced the set of data we want to extract with jinja-style placeholders.
+
+Notice we use a special placeholder called {%raw%}{{ _start_ }}{%endraw%} to tell the parsing
+engine we want it to start matching data AFTER it sees the header for our text table. Otherwise,
+the header containing the words "Interface ... IP-Address.. OK? ... " would be parsed just like
+any other line in the table, producing potentially unexpected results. Applying the above
+parser to our `show ip interface brief` output yields:
+
+```json
+data = [
+    {
+        "GigabitEthernet1": {
+            "admin_status": "up",
+            "ip_address": "10.10.20.48",
+            "method": "NVRAM",
+            "ok": "YES",
+            "oper_status": "up"
+        },
+        "GigabitEthernet2": {
+            "admin_status": "administratively down",
+            "ip_address": "unassigned",
+            "method": "NVRAM",
+            "ok": "YES",
+            "oper_status": "down"
+        },
+        "GigabitEthernet3": {
+            "admin_status": "administratively down",
+            "ip_address": "unassigned",
+            "method": "NVRAM",
+            "ok": "YES",
+            "oper_status": "down"
+        },
+        "Loopback2050": {
+            "admin_status": "up",
+            "ip_address": "192.168.60.50",
+            "method": "manual",
+            "ok": "YES",
+            "oper_status": "up"
+        },
+        "Loopback21": {
+            "admin_status": "up",
+            "ip_address": "unassigned",
+            "method": "unset",
+            "ok": "YES",
+            "oper_status": "up"
+        }
+    }
+]
+
+```
 
 ## Groups
+Groups allow us to add hierarchies to our data models. Thanks to the <group> tag in our previous
+example, TTP created a nested data structure for each interface. Notice that each interface name
+was assigned a key within our output JSON; data pertaining to that interface was logically put
+inside a dictionary specific to that interface. If we think of Python, data can be acessed via
+list and dictionary indexing:
+```python
+data_dict = data[0]
 
+# intf receives key (interface name), status receives dictionary with state info
+for intf, status in data_dict.items():
+    print(f"Status for interface {intf} is {status['oper_status']}")
+
+```
+
+Which results in:
+
+```
+Status for instance GigabitEthernet1 is up
+Status for instance GigabitEthernet2 is down
+Status for instance GigabitEthernet3 is down
+Status for instance Loopback21 is up
+Status for instance Loopback2050 is up
+```
 
 [cli-automation]: https://matman26.github.io/posts/intent-based-cli-devices-controller
 [regex101]: https://regex101.com/r/KYzHix/1
