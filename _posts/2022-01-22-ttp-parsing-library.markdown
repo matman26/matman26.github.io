@@ -146,12 +146,14 @@ There is a _textual pattern_ to this block of configuration:
 We can account for that pattern by copy and pasting the above output into a text
 editor and replacing the information we want to collect with placeholders.
 
-```
+{% highlight %}
+{% raw %}
 interface {{ interface_name }}
  description {{ description | ORPHRASE }}
  ip address {{ ip_address | IP }} {{ subnet_mask }}
 end
-```
+{% endraw %}
+{% endhighlight %}
 
 The above syntax may remind some of you of Jinja syntax. TTP Templates have some
 similar ideias to Jinja but are meant to do the exact opposite operation: while
