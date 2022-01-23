@@ -66,7 +66,7 @@ The following expression, for example, can be used to identify a
 Cisco Interface name.
 
 ```python
-# ^[A-Z] means the string can begin with any uppercase character
+# ^[A-Z] means the line can begin with any uppercase character
 # [A-Za-z]+ means we can have one or more upper and lower case characters
 # [/0-9]+ means we can have a combination of numbers and slashes 
 ^[A-Z][A-Za-z]+[/0-9]+
@@ -75,7 +75,7 @@ Cisco Interface name.
 By extension, one Regular expression that would match all fields in the file `show_ip_interface_brief.txt`
 would look something like:
 ```
-([A-Z][A-Za-z]+[/0-9]+)\s+(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}|unassigned)\s+([A-Z]+)\s+([A-Za-z]+)\s+(up|administratively down)\s+(up|down)
+^([A-Z][A-Za-z]+[/0-9]+)\s+(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}|unassigned)\s+([A-Z]+)\s+([A-Za-z]+)\s+(up|administratively down)\s+(up|down)
 ```
 
 + If what I just wrote makes absolutely no sense to you, stay calm. We won't be having to work with regular expressions much longer.
@@ -155,7 +155,6 @@ editor and replacing the information we want to collect with placeholders:
 interface {{ interface_name }}
  description {{ description | ORPHRASE }}
  ip address {{ ip_address | IP }} {{ subnet_mask }}
-end
 {% endraw %}
 {% endhighlight %}
 
@@ -256,7 +255,7 @@ Notice we added a `{%raw%}<group>...</group>{%endraw%}` tag to our new parser. T
 elaborate on in the following section. For now, just know that groups add higher-level 
 hierarchies to data models. 
 
-Notice we use a special placeholder called `{%raw%}{{ \_start\_ }}{%endraw%}` to tell the parsing
+Notice we use a special placeholder called `{%raw%}{{ __start__ }}{%endraw%}` to tell the parsing
 engine we want it to start matching data AFTER it sees the header for our text table. Otherwise,
 the header containing the words "Interface ... IP-Address.. OK? ... " would be parsed just like
 any other line in the table, producing potentially unexpected results. Applying the above
@@ -388,7 +387,7 @@ vendor follows different CLI syntax, we can simply build a base YANG model we wa
 all of our devices to follow, regardless of vendor. Based on that model we build our
 own TTP parser for each vendor. As we saw, the process of building a parser is as
 simple as copy-pasting CLI output and putting placeholders where you need to gather
-data from.
+data from, while also defining groups to logically add hierarchies to your model.
 
 Going back to how groups operate, you can specify groups by introducing the 
 `{%raw%}<group>...</group>{%endraw%}` pair of XML tags in your parser. The important thing to consider
@@ -460,7 +459,7 @@ TTP also gives us much more versatility and control over _how_ parsing is done
 through macros. In a nutshell, macros are a block of python functions that you can 
 use inside your parsing statements. They allow us to conform our matched values to
 specific formats (so as to comply with our data models) or do some extra processing 
-from certain values. Let's go back to the output of `show run interface` and 
+from certain values. Let's go back to the output of `show run interface <interface>` and 
 build a macro that turns dot-notation subnet masks into CIDR notation.
 
 As a reminder, our output for `show run interface GigabitEthernet1` was:
@@ -482,7 +481,7 @@ tag can then be used using the `macro('<function_name>')` call as shown below:
 {% raw %}
 <macro>
 def dot_to_cidr(mask):
-    '''Converts each octet in MASK to binary and counts number of 1s.'''
+    '''Converts each octet in MASK to binary and counts the amount of 1s.'''
     return sum([str(bin(int(octet))).count("1") 
                 for octet in mask.split(".")])
 </macro>
@@ -558,15 +557,14 @@ print(results)
 {% endhighlight %}
 
 This was meant as a basic introduction to TTP, as such, we barely scratched 
-the surface on what this tool has to offer. I'll probably go back to it sometime
+the surface on what this tool has to offer. I'll probably get back to it some day
 in the future as there are interesting features to be looked at in more
-detail. If you are interested, there are also some TTP resources you can look
-into:
+detail. If you are interested, there are also some TTP resources you 
+can look into:
 
 + [TTP Parsing Strategies][ntc-parsing-strategies] from Network To Code's blog;
 + [Network Automation - Nokia SROS Parser][sros-data-modelling] on Youtube for a practical example of data-modelling with TTP.
 + [TTP's Documentation][ttp], for a guide on all advanced features.
-
 
 [sros-data-modelling]: https://youtu.be/-lU2-8fZrPo
 [ntc-parsing-strategies]: http://blog.networktocode.com/post/parsing-strategies-ttp/
