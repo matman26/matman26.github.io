@@ -252,11 +252,11 @@ Interface              IP-Address      OK? Method Status                Protocol
 
 Just like last time, we essentially copy-pasted the whole
 table and replaced the set of data we want to extract with jinja-style placeholders.
-Notice we added a {%raw%}<group>{%endraw%} tag to our new parser. This is something we'll 
+Notice we added a `{%raw%}<group>...</group>{%endraw%}` tag to our new parser. This is something we'll 
 elaborate on in the following section. For now, just know that groups add higher-level 
 hierarchies to data models. 
 
-Notice we use a special placeholder called {%raw%}{{ \_start\_ }}{%endraw%} to tell the parsing
+Notice we use a special placeholder called `{%raw%}{{ \_start\_ }}{%endraw%}` to tell the parsing
 engine we want it to start matching data AFTER it sees the header for our text table. Otherwise,
 the header containing the words "Interface ... IP-Address.. OK? ... " would be parsed just like
 any other line in the table, producing potentially unexpected results. Applying the above
@@ -314,7 +314,7 @@ Notice that each interface name
 was assigned a key within our output JSON; data pertaining to that interface was logically put
 inside a dictionary specific to that interface. If we parse the above json into a list of 
 dictionaries in Python, we can access data via regular list and dictionary indexing. Since
-lists and dictionaries are Iterable Python objects, we can use them on our `for` loops to
+lists and dictionaries are Iterable Python objects, we can use them in our `for` loops to
 act on all elements of the resulting data. In the snippet below, we print every interface's
 administative status:
 
@@ -323,7 +323,7 @@ data_dict = data[0]
 
 # intf receives key (interface name), status receives dictionary with state info
 for intf, status in data_dict.items():
-    print(f"Status for interface {intf} is {status[admin_status']}")
+    print(f"Status for interface {intf} is {status['admin_status']}")
 
 ```
 
@@ -352,8 +352,8 @@ list interface {
   }
   leaf admin_status {
     type enumeration {
-      enum "administratively up";
-      enum "down";
+      enum "administratively down";
+      enum "up";
     }
   }
   leaf oper_status {
@@ -474,7 +474,7 @@ interface GigabitEthernet1
  no mop sysid
 ```
 
-We can define Macros using a {%raw%}<macro>{%endraw%} tag in our parser template 
+We can define Macros using a `{%raw%}<macro>...</macro>{%endraw%}` tag in our parser template 
 and defining regular python functions inside. Functions defined inside the macro 
 tag can then be used using the `macro('<function_name>')` call as shown below:
 
@@ -509,8 +509,8 @@ The JSON result is now:
 ```
 
 # Conclusions
-Overall, TTP has become my favorite text parsing library for Python. It really 
-is easy to use and easy to explain while also giving total control to more veteran
+Overall, TTP has become my favorite text parsing library for Python. It is really 
+easy to use and easy to explain while also giving total control to more veteran
 users, down to the regular expression level.
 
 If you want to play around with it, you can get the library directly with pip:
