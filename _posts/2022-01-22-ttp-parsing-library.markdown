@@ -107,6 +107,7 @@ of taking plain text and turning it into structured data. In the context of Pyth
 this would usually be a combination of **lists** and **dictionaries**. TTP in particular
 can also serialize parsed data into formats such as _csv_, _json_ and others.
 
+![Figure: TTP Parser](/assets/images/ttp-parser.svg)
 
 # TTP
 TTP is at its core a very user-friendly Parsing library. Don't let that fool you into thinking
@@ -471,7 +472,8 @@ We can define Macros using a <macro> tag in our parser template and defining
 regular python functions inside. Functions defined inside the macro tag can
 then be used using the `macro('<function_name>')` call as shown below:
 
-```
+{% highlight html %}
+{% raw %}
 <macro>
 def dot_to_cidr(mask):
     '''Converts each octet in mask to binary and count number of 1s.'''
@@ -483,7 +485,8 @@ interface {{ interface_name }}
  description {{ description | ORPHRASE }}
  ip address {{ ip_address | IP }} {{ subnet_mask | macro('dot_to_cidr') }}
 </group>
-```
+{% endraw %}
+{% endhighlight %}
 
 The JSON result is now:
 ```json
