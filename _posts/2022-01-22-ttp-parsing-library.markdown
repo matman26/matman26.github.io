@@ -392,7 +392,7 @@ Groups can have a static name, where the name attribute receives a static string
 or a variable name. Groups with static names are similar to `container` type nodes
 in YANG; they are merely namespaces you can access to to retrieve more specific data from.
 
-{% hightlight html %}
+{% highlight html %}
 {% raw %}
 <group name="interfaces">
   <group name="{{ interface_name }}">
@@ -401,7 +401,7 @@ Interface              IP-Address      OK? Method Status                Protocol
   </group>
 </group>
 {% endraw %}
-{% endhightlight %}
+{% endhighlight %}
 
 The above parser produces a top-level key in our result called "interfaces". All
 interface data from our previous example is grouped inside.
