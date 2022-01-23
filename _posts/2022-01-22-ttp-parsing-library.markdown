@@ -255,7 +255,7 @@ Notice we added a `{%raw%}<group>...</group>{%endraw%}` tag to our new parser. T
 elaborate on in the following section. For now, just know that groups add higher-level 
 hierarchies to data models. 
 
-Notice we use a special placeholder called `{%raw%}{{ __start__ }}{%endraw%}` to tell the parsing
+Notice we use a special placeholder called `{%raw%}{{ _start_ }}{%endraw%}` to tell the parsing
 engine we want it to start matching data AFTER it sees the header for our text table. Otherwise,
 the header containing the words "Interface ... IP-Address.. OK? ... " would be parsed just like
 any other line in the table, producing potentially unexpected results. Applying the above
