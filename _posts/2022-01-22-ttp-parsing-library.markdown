@@ -147,7 +147,7 @@ There is a _textual pattern_ to this block of configuration:
 + After the keyword _description_, we can expect to see the interface's description
 + After _ip address_, we expect to see first the IPv4 Address and then its subnet mask
 
-We can account for that pattern by copy and pasting the above output into a text
+We can account for that pattern by copying and pasting the above output into a text
 editor and replacing the information we want to collect with placeholders:
 
 {% highlight html %}
@@ -160,19 +160,19 @@ end
 {% endhighlight %}
 
 The above syntax may remind some of you of Jinja syntax. TTP Templates have some
-similar ideias to Jinja but are meant to do the exact opposite operation: while
-Jinja produces text, TTP reverse-engineers text into structured data. We can
-name the data to be extracted using the `{%raw%}{{ <variable-name> }}{%endraw%}` 
-construction. Notice we used the `ORPHRASE` and `IP` filters to be intentional 
-about our collection.
+similar ideas to Jinja but are meant to do the exact opposite operation: while
+Jinja produces text from structured data, TTP reverse-engineers text into 
+structured data. We can name the data to be extracted using the 
+`{%raw%}{{ <variable-name> }}{%endraw%}` construction. Notice we used the
+`ORPHRASE` and `IP` filters to be intentional about our collection.
 + The `ORPHRASE` filter matches a word or phrase; interface descriptions may be multiple words in length.
 + The `IP` filter matches an IPv4 Address in dot-notation.
 
 Behind the scenes, filters like `IP` and `ORPHRASE` are just regular expressions
 bundled with TTP so you don't need to write common patterns yourself. You
 can always create your own Regular Expressions and use them as filters, but we'll
-talk about that later. Parsing the original output with our template will 
-yield the following result in **json** format:
+talk in details about that in another post. Parsing the original output with our 
+template will yield the following result in **json** format:
 
 ```json
 [
@@ -188,7 +188,7 @@ yield the following result in **json** format:
 The beauty of TTP lies in the fact that it's pretty good at grouping data from 
 same-level hierarchies. In our above case, we have a flat hierarchy (no nested
 data structures, just plain key-value pairs for each interface). The fact that 
-the four values are being grouped becomes even more apparent if we feed this 
+the four values are being grouped together becomes even more apparent if we give this 
 same parser the output from `show run | section interface`:
 
 ```json
@@ -230,7 +230,7 @@ our template. Since it saw the 'structure' we established beginning with `interf
 five times, it generated five different dictionaries, one for each of the interfaces.
 
 Notice that the naming convention we chose to represent our data matters. In a way, we
-can say that template we'd made models all of our interfaces through four values:
+can say that the parser we just made models all of our interfaces using four values:
 + **interface_name**, the name of the interface;
 + **description**, the interface's description;
 + **ip_address**, the interface's IPv4 Address;
@@ -252,11 +252,11 @@ Interface              IP-Address      OK? Method Status                Protocol
 
 Just like last time, we essentially copy-pasted the whole
 table and replaced the set of data we want to extract with jinja-style placeholders.
-Notice we added a <group> tag to our new parser. This is something we'll elaborate on 
-in the following section. For now, just know that groups add higher-level hierarchies
-to data models. 
+Notice we added a {%raw%}<group>{%endraw%} tag to our new parser. This is something we'll 
+elaborate on in the following section. For now, just know that groups add higher-level 
+hierarchies to data models. 
 
-Notice we use a special placeholder called {%raw%}{{ _start_ }}{%endraw%} to tell the parsing
+Notice we use a special placeholder called {%raw%}{{ \_start\_ }}{%endraw%} to tell the parsing
 engine we want it to start matching data AFTER it sees the header for our text table. Otherwise,
 the header containing the words "Interface ... IP-Address.. OK? ... " would be parsed just like
 any other line in the table, producing potentially unexpected results. Applying the above
@@ -306,21 +306,24 @@ parser to our `show ip interface brief` output yields:
 ```
 
 ## Groups and Data Models
-Groups allow us to add hierarchies to our data models. Thanks to the <group> tag in our previous
-example, TTP created a nested data structure for each interface. Notice that each interface name
+Groups allow us to add hierarchies to our data models. Thanks to the 
+`{%raw%}<group>...</group>{%endraw%}` tag in our previous
+example, TTP created a nested data structure for each interface. 
+
+Notice that each interface name
 was assigned a key within our output JSON; data pertaining to that interface was logically put
 inside a dictionary specific to that interface. If we parse the above json into a list of 
 dictionaries in Python, we can access data via regular list and dictionary indexing. Since
 lists and dictionaries are Iterable Python objects, we can use them on our `for` loops to
-act on all elements of the resulting data. In the example below, we print every interface's
-operational status:
+act on all elements of the resulting data. In the snippet below, we print every interface's
+administative status:
 
 ```python
 data_dict = data[0]
 
 # intf receives key (interface name), status receives dictionary with state info
 for intf, status in data_dict.items():
-    print(f"Status for interface {intf} is {status['oper_status']}")
+    print(f"Status for interface {intf} is {status[admin_status']}")
 
 ```
 
@@ -328,8 +331,8 @@ This results in:
 
 ```
 Status for instance GigabitEthernet1 is up
-Status for instance GigabitEthernet2 is down
-Status for instance GigabitEthernet3 is down
+Status for instance GigabitEthernet2 is administratively down
+Status for instance GigabitEthernet3 is administratively down
 Status for instance Loopback21 is up
 Status for instance Loopback2050 is up
 ```
@@ -337,8 +340,8 @@ Status for instance Loopback2050 is up
 By grouping everything under the name of the interface, we built a structure the follows
 a similar logic to a YANG-model `list` node; YANG `lists` are keyed structures,
 so in our case the name of the interface is a key to get the underlying data (such
-as oper status, ip address, and so on). To be more clear, we can write a YANG model that's
-roughly equivalent to the structure of the data produced by our parser:
+as oper status, ip address, and so on). To be more clear and intentional, we can write a 
+YANG model that's roughly equivalent to the structure of the data produced by our parser:
 
 ```yang
 ... <definitions, imports above>
@@ -377,20 +380,22 @@ list interface {
 
 ```
 
-This is where we can begin to see some interaction between Data Modelling and Parsing.
+This is where we can begin to see a link between Data Modelling and Parsing.
 Even if our devices are purely CLI based, we can write a parser that will abstract
 those low-level details into an actual data model; this becomes even more powerful if
-you can write parsers that do this across different vendors. Since every networking
+we can write parsers that do this across different vendors. Since every networking
 vendor follows different CLI syntax, we can simply build a base YANG model we want
 all of our devices to follow, regardless of vendor. Based on that model we build our
-own TTP parser for each vendor.
+own TTP parser for each vendor. As we saw, the process of building a parser is as
+simple as copy-pasting CLI output and putting placeholders where you need to gather
+data from.
 
 Going back to how groups operate, you can specify groups by introducing the 
-<group>...</group> pair of XML tags in your parser. The important thing to consider
+`{%raw%}<group>...</group>{%endraw%}` pair of XML tags in your parser. The important thing to consider
 is the name for your group, which can be set using the `name` attribute on the tag.
 Groups can have a static name, where the name attribute receives a static string value,
 or a variable name. Groups with static names are similar to `container` type nodes
-in YANG; they are merely namespaces you can access to to retrieve more specific data from.
+in YANG; they are merely namespaces you can access to retrieve more specific data.
 
 {% highlight html %}
 {% raw %}
@@ -403,8 +408,8 @@ Interface              IP-Address      OK? Method Status                Protocol
 {% endraw %}
 {% endhighlight %}
 
-The above parser produces a top-level key in our result called "interfaces". All
-interface data from our previous example is grouped inside.
+The above parser produces a top-level key in our json results called "interfaces". All
+of the interface's data from our previous example are grouped inside.
 
 ```json
 [
@@ -451,14 +456,15 @@ interface data from our previous example is grouped inside.
 ```
 
 ## Macros
-TTP also allows us much more versatility and control over _how_ parsing is done
+TTP also gives us much more versatility and control over _how_ parsing is done
 through macros. In a nutshell, macros are a block of python functions that you can 
 use inside your parsing statements. They allow us to conform our matched values to
-specific formats or do some extra processing from certain values. Let's go back to
-the output of `show run interface` and build a macro that turns dot-notation subnet
-masks into CIDR notation.
+specific formats (so as to comply with our data models) or do some extra processing 
+from certain values. Let's go back to the output of `show run interface` and 
+build a macro that turns dot-notation subnet masks into CIDR notation.
 
-For reminders, our output for interface GigabitEthernet1 was:
+As a reminder, our output for `show run interface GigabitEthernet1` was:
+
 ```
 interface GigabitEthernet1
  description MANAGEMENT INTERFACE - DON'T TOUCH ME
@@ -468,15 +474,15 @@ interface GigabitEthernet1
  no mop sysid
 ```
 
-We can define Macros using a <macro> tag in our parser template and defining
-regular python functions inside. Functions defined inside the macro tag can
-then be used using the `macro('<function_name>')` call as shown below:
+We can define Macros using a {%raw%}<macro>{%endraw%} tag in our parser template 
+and defining regular python functions inside. Functions defined inside the macro 
+tag can then be used using the `macro('<function_name>')` call as shown below:
 
 {% highlight html %}
 {% raw %}
 <macro>
 def dot_to_cidr(mask):
-    '''Converts each octet in mask to binary and count number of 1s.'''
+    '''Converts each octet in MASK to binary and counts number of 1s.'''
     return sum([str(bin(int(octet))).count("1") 
                 for octet in mask.split(".")])
 </macro>
@@ -503,8 +509,8 @@ The JSON result is now:
 ```
 
 # Conclusions
-Overall, TTP has become my favorite text parsing library for Python. It is easy
-to use and easy to explain while also giving total control to more veteran
+Overall, TTP has become my favorite text parsing library for Python. It really 
+is easy to use and easy to explain while also giving total control to more veteran
 users, down to the regular expression level.
 
 If you want to play around with it, you can get the library directly with pip:
@@ -551,6 +557,19 @@ print(results)
 {% endraw %}
 {% endhighlight %}
 
+This was meant as a basic introduction to TTP, as such, we barely scratched 
+the surface on what this tool has to offer. I'll probably go back to it sometime
+in the future as there are interesting features to be looked at in more
+detail. If you are interested, there are also some TTP resources you can look
+into:
+
++ [TTP Parsing Strategies][ntc-parsing-strategies] from Network To Code's blog;
++ [Network Automation - Nokia SROS Parser][sros-data-modelling] on Youtube for a practical example of data-modelling with TTP.
++ [TTP's Documentation][ttp], for a guide on all advanced features.
+
+
+[sros-data-modelling]: https://youtu.be/-lU2-8fZrPo
+[ntc-parsing-strategies]: http://blog.networktocode.com/post/parsing-strategies-ttp/
 [cli-automation]: https://matman26.github.io/posts/intent-based-cli-devices-controller
 [regex101]: https://regex101.com/r/KYzHix/1
 [genie]: https://developer.cisco.com/docs/genie-docs/
