@@ -14,5 +14,5 @@ I do Network Automation. Occasionally it works. _Occasionally_.
 + My [Github](https://github.com/matman26)
 
 # Posts
-[Intent-Driven Network Automation for CLI Devices](https://matman26.github.io/posts/intent-based-cli-devices-controller)
-[TTP: Practical, Digestible, Model-Driven Text Parser](https://matman26.github.io/posts/ttp-practical-digestible-model-driven-parser)
++ [Intent-Driven Network Automation for CLI Devices](https://matman26.github.io/posts/intent-based-cli-devices-controller)
++ [TTP: Practical, Digestible, Model-Driven Text Parser](https://matman26.github.io/posts/ttp-practical-digestible-model-driven-parser)
