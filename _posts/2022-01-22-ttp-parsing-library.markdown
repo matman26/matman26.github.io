@@ -115,7 +115,7 @@ that you can only use it for the simplest of tasks; TTP also has advanced featur
 templating, macros and support for multiple output formats. We'll be taking a look at
 those soon.
 
-For now, let's try to solve our original issue with TTP; the ideia was to collect each
+For now, let's try to solve our original issue with TTP; the idea was to collect each
 interface's status from **show ip interface brief**. In TTP, rather than writing long regular
 expressions to match specific fields (we still can do that, but in most basic cases we 
 aren't required to), we just specify a template with placeholders that TTP can use to understand
