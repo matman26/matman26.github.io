@@ -51,8 +51,8 @@ The most important features a source control system needs are:
 Historically, version control has been achieved in several different ways, with varying
 degrees of success. Linus Torvalds, the creator of Linux (and also the creator
 of Git, we'll get to that) has said during an interview that the development of
-the Linux Kernel was handled by Patch files being sent in a tarball format: every
-time someone on the team made some change to the code, she would generate a diff
+the Linux Kernel during the late 90's and early 2000's was handled by Patch files being sent 
+in a tarball format: every time someone on the team made some change to the code, he or she would generate a diff
 between the original code and the new version, compress that as a **tar.gz**
 archive and send it as an e-mail attachment to other developers. This, of course,
 was very labor intensive and prone to human errors, as patches were manually 
@@ -151,7 +151,16 @@ we can mention:
 + A timestamp (date and time when the commit was made)
 + A message field that the commit author can use to explain changes that were made
 
-<++> Results of git log with info here <++>
+![Figure: Git Tree example](/assets/images/git-tree.svg)
+
+```
+$ git log
+commit 80ff0ac807cca14ee68b4eb687718693879871fc (HEAD -> master)
+Author: alice <alice@abc.com>
+Date:   Sun Feb 6 13:30:50 2022 -0300
+
+    Commit A
+```
 
 From a high-level point of view, there are three main components to Git's distributed
 architecture:
@@ -184,6 +193,7 @@ you usually want to be short while also giving any future reviewer an
 idea of what you are attempting to do with your branch.
 
 <++> Feature Branch for assign-vlan-to-trunk <++>
+![Figure: Git tree with Branching](/assets/images/branching-tree.svg)
 
 ```
 # Set your workspace to track the default branch (usually is master)
@@ -220,19 +230,27 @@ git push --set-upstream origin vlan-to-trunk
 ```
 
 Since your local repository is now ahead of the remote one by a few commits,
-and has a branch that does not exist yet in remotely,
+and has a branch that does not yet exist there,
 whenever you issue a `git push` your changes will be sent over the network to
 the server. In this case, we are updating the remote server called **origin** with a new branch
-that we are calling **vlan-to-trunk**; notice we are creating a new branch on the
+that we are calling **assign-vlan**; notice we are creating a new branch on the
 remote server with a different name from the one we have locally. Internally
 Git keeps track of which local branches refer to which remote branches, so
 these name differences don't pose an issue. If ou don't specify
 a new branch name when pushing you'll just replicate your local branch name on
 the remote if it does not exist yet.
 
+![Figure: Pushing a local branch to the remote repository](/assets/images/git-push.svg)
+
 Once your changes exist as a new branch on the remote, you can tell your team
 members the feature is implemented. This is when the code review process can begin;
+external git services such as GitHub and GitLab usually facilitate code review via 
+graphical web-based front-ends, but Git also allows for the remote repository to
+be a bare Git server, where the code reviewer could log in via the CLI and execute
+commands such as `git diff` to inspect changes and `git merge` to merge changes
+from the feature branch into the master branch.
 
-## Git Workflows
-### Gitflow
-### Continuous Integration/Continuous Delivery
+```
+# Compare the tip of master to the tip of assign-vlan
+git diff master..assign-vlan
+```
