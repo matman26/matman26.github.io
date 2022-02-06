@@ -6,7 +6,7 @@ layout: default
 title: Matheus Augusto da Silva
 ---
 # Info
-I do Network Automation. Occasionally it works. _Occasionally_.
+Network Automation Engineer currently based in Brazil.
 
 ## Some socials
 + My [LinkedIn](https://www.linkedin.com/in/matheusaugustodasilva/)

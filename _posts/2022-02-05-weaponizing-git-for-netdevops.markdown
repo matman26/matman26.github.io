@@ -64,7 +64,8 @@ There must be a better way, right!?
 
 ## CVS
 CVS or Concurrent Version System was one of the first influential Version
-Control Systems to be implemented. CVS' initial idea was to simplify cooperation
+Control Systems to be implemented, dating all the way back to 1986. 
+CVS' initial idea was to simplify cooperation
 between small teams by allowing users to synchronize their changes with a remote
 repository; CVS implements a client-server architecture where a centralized
 server represents the latest state of the code. This simplified the process
@@ -98,9 +99,12 @@ event, the repository could be left in a corrupted and unusable state.
 ## Distributed vs. Centralized Version Control
 CVS was definitely a step in the right direction conceptually when 
 compared to manually generating and sending patches, but it also had
-its fair share of flaws.
-
-<+++++> More stuff here <+++++>
+its fair share of flaws. For starters, CVS relies on a centralized
+client-server architecture: all of the basic operations like doing
+commits, merges and branching relied on network connectivity to
+some remote server, which often meant that performance could suffer
+on larger projects. To try and solve this issue, decentralized
+version control systems started to emerge in the late 90's.
 
 ![Figure: Centralized Version Control](/assets/images/centralized-version-control.svg)
 
@@ -192,7 +196,6 @@ Different teams can use different conventions to name feature branches, but
 you usually want to be short while also giving any future reviewer an 
 idea of what you are attempting to do with your branch.
 
-<++> Feature Branch for assign-vlan-to-trunk <++>
 ![Figure: Git tree with Branching](/assets/images/branching-tree.svg)
 
 ```
@@ -248,7 +251,8 @@ external git services such as GitHub and GitLab usually facilitate code review v
 graphical web-based front-ends, but Git also allows for the remote repository to
 be a bare Git server, where the code reviewer could log in via the CLI and execute
 commands such as `git diff` to inspect changes and `git merge` to merge changes
-from the feature branch into the master branch.
+from the feature branch into the master branch after properly reviewing 
+incoming changes.
 
 ```
 # Compare the tip of master to the tip of assign-vlan
