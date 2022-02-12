@@ -3,7 +3,7 @@ layout: default
 title: Basic Git Concepts for Network Automation
 date:   2022-02-05 12:00:00 -0300
 permalink: /posts/git-distributed-version-control
-image: /assets/images/distributed-version-control.svg
+image: /assets/images/thumbnail-git.png
 ---
 
 # Version Control
