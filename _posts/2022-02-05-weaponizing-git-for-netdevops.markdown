@@ -1,8 +1,8 @@
 ---
 layout: default
-title:  "Git: Decentralized Version Control for Network Automation"
+title: Basic Git Concepts for Network Automation
 date:   2022-02-05 12:00:00 -0300
-permalink: /posts/weaponizing-git-for-netdevops
+permalink: /posts/git-distributed-version control
 image: /assets/images/distributed-version-control.svg
 ---
 
@@ -19,8 +19,8 @@ automation).
 
 When teaching Git, it is very easy to try to give students a cheat-sheet
 with a few commands teaching how to do a `git commit`, a `git push` and
-so on. This does explain **how** git works but aspiring Network Automation
-Engineers need to focus just as much on **why** these workings are important
+so on. This does explain **how** git works but it's often more useful
+to focus just as much on **why** these workings are important
 pieces of automation in their own right; this reasoning is what we'll be 
 taking a look on this article. We'll see that Git is a very intuitive
 piece of software once you understand a few concepts. Once we get there,
@@ -95,7 +95,6 @@ and sync them up at a later moment. CVS also didn't track code patching
 atomically; this meant that if a patch failed due to some outside 
 event, the repository could be left in a corrupted and unusable state.
 
-
 ## Distributed vs. Centralized Version Control
 CVS was definitely a step in the right direction conceptually when 
 compared to manually generating and sending patches, but it also had
@@ -150,21 +149,10 @@ the central repository in CVS. Git decides instead to define commits as a set of
 applied to the code (i.e. a **diff**) plus some metadata; these changes are linked not
 to a remote repository but to a local one. Among the metadata Git links to each commit,
 we can mention:
-+ A commit hash which can be seen as a pointer to the commit on the tree
++ A hash which can be seen as an identifier of the commit on the tree
 + The commit author (the one who made and commited the changes)
 + A timestamp (date and time when the commit was made)
 + A message field that the commit author can use to explain changes that were made
-
-![Figure: Git Tree example](/assets/images/git-tree.svg)
-
-```
-$ git log
-commit 80ff0ac807cca14ee68b4eb687718693879871fc (HEAD -> master)
-Author: alice <alice@abc.com>
-Date:   Sun Feb 6 13:30:50 2022 -0300
-
-    Commit A
-```
 
 From a high-level point of view, there are three main components to Git's distributed
 architecture:
@@ -178,6 +166,24 @@ changes as a commit, you first explicity tell git which files you want to add to
 your next commit using `git add <filename>` and once this is done you commit them
 to your local repository using `git commit -m <message>`. 
 
+![Figure: Git Tree example](/assets/images/git-tree.svg)
+
+```
+$ git log
+commit 45d852d703403ebae78c62846545e710eb7840f5 (HEAD -> master)
+Author: alice <alice@abc.com>
+Date:   Sun Feb 6 17:14:40 2022 -0300
+
+    Commit B
+
+commit 80ff0ac807cca14ee68b4eb687718693879871fc
+Author: alice <alice@abc.com>
+Date:   Sun Feb 6 13:30:50 2022 -0300
+
+    Commit A
+
+```
+
 Since all operations you do on git need to first pass through your local repository,
 you can be sure that the performance of commits, branches and merges is only limited
 by your filesystem; you don't need to consult any external server over the network
@@ -186,8 +192,7 @@ to do any of these, so they happen really fast.
 ### Branching and Merging
 Branches on Git are designed to encapsulate modular changes to the codebase.
 Let's suppose you have an automation script that creates VLANs on a Nexus Switch.
-Your script
-currently adds a Vlan ID and a description, but you'd also like it to add that 
+Your script currently adds a Vlan ID and a description, but you'd also like it to add that 
 newly-created VLAN to your trunk ports automatically; this can be seen as a 
 new self-contained feature for your script. In this case, the usual workflow 
 would be to sync up to the latest version of your script and then create a 
@@ -258,3 +263,38 @@ incoming changes.
 # Compare the tip of master to the tip of assign-vlan
 git diff master..assign-vlan
 ```
+
+Once code review was done, the reviewer could issue a `git merge` to have your
+work incorporated into the master branch:
+```
+# Switch to master branch
+git checkout master
+
+# Merge changes
+git merge assign-vlan
+```
+
+![Figure: Code Review and Merging process](/assets/images/merged-changes.svg)
+
+# Next steps
+So we've reached the end. We've taken a look at some basic git commands along
+the way with a context on why and when they are used. You can now differentiate
+between a decentralized version control system and a centralized one and you
+can compare Git to one of its predecessors, CVS. Now what?
+
+We've only just scratched the surface of version control with Git, but this
+basic overview should be enough to get you working with basic versioning. There
+are some great free resources on-line that you can use to get a more in-depth
+view of the tool for your own projects:
+
++ [Pro Git Free Ebook][git-scm]
++ [Atlassian's Getting Git Right series][atlassian-get-git]
++ [Interactive tool to learn git Branching][git-branching-tool]
+
+In a future post we'll be tackling more advanced git Branching patterns
+as well as Continuous Integration and how it relates to version control.
+See you there!
+
+[pro-git]: https://git-scm.com/book/en/v2
+[atlassian-get-git]: https://www.atlassian.com/git
+[git-branching-tool]: https://learngitbranching.js.org/
