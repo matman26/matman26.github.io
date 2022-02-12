@@ -2,7 +2,7 @@
 layout: default
 title: Basic Git Concepts for Network Automation
 date:   2022-02-05 12:00:00 -0300
-permalink: /posts/git-distributed-version control
+permalink: /posts/git-distributed-version-control
 image: /assets/images/distributed-version-control.svg
 ---
 
@@ -287,7 +287,7 @@ basic overview should be enough to get you working with basic versioning. There
 are some great free resources on-line that you can use to get a more in-depth
 view of the tool for your own projects:
 
-+ [Pro Git Free Ebook][git-scm]
++ [Pro Git Free Ebook][pro-git]
 + [Atlassian's Getting Git Right series][atlassian-get-git]
 + [Interactive tool to learn git Branching][git-branching-tool]
 
