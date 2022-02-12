@@ -145,9 +145,8 @@ Git sees and compiles all changes made to the code as _commits_; the concept of 
 ever since early VCSs, but they have a different meaning when it comes to distributed
 version control. In CVS, a commit required network connectivity to the repository. In
 fact, most tasks like branching, commiting and merging code required connectivity to
-the central repository in CVS. Git decides instead to define commits as a set of changes
-applied to the code (i.e. a **diff**) plus some metadata; these changes are linked not
-to a remote repository but to a local one. Among the metadata Git links to each commit,
+the central repository in CVS. In Git, commits are simply named snapshots of your files
+on a given point in time plus some metadata; among the metadata Git links to each commit,
 we can mention:
 + A hash which can be seen as an identifier of the commit on the tree
 + The commit author (the one who made and commited the changes)
@@ -168,6 +167,7 @@ to your local repository using `git commit -m <message>`.
 
 ![Figure: Git Tree example](/assets/images/git-tree.svg)
 
+Resulting Git Log from the above figure:
 ```
 $ git log
 commit 45d852d703403ebae78c62846545e710eb7840f5 (HEAD -> master)
@@ -184,7 +184,7 @@ Date:   Sun Feb 6 13:30:50 2022 -0300
 
 ```
 
-Since all operations you do on git need to first pass through your local repository,
+Since all operations you do on Git need to first pass through your local repository,
 you can be sure that the performance of commits, branches and merges is only limited
 by your filesystem; you don't need to consult any external server over the network
 to do any of these, so they happen really fast.
@@ -251,10 +251,10 @@ the remote if it does not exist yet.
 ![Figure: Pushing a local branch to the remote repository](/assets/images/git-push.svg)
 
 Once your changes exist as a new branch on the remote, you can tell your team
-members the feature is implemented. This is when the code review process can begin;
+members the feature is awaiting approval. This is when the code review process can begin;
 external git services such as GitHub and GitLab usually facilitate code review via 
-graphical web-based front-ends, but Git also allows for the remote repository to
-be a bare Git server, where the code reviewer could log in via the CLI and execute
+graphical web-based front-ends and color-coded diffs, but Git also allows for the remote repository to
+be a bare Git server, where the code reviewer could log in via ssh and execute
 commands such as `git diff` to inspect changes and `git merge` to merge changes
 from the feature branch into the master branch after properly reviewing 
 incoming changes.
