@@ -16,3 +16,4 @@ Network Automation Engineer currently based in Brazil.
 # Posts
 + [Intent-Driven Network Automation for CLI Devices](https://matman26.github.io/posts/intent-based-cli-devices-controller)
 + [TTP: Practical, Digestible, Model-Driven Text Parser](https://matman26.github.io/posts/ttp-practical-digestible-model-driven-parser)
++ [Basic Git Concepts for Network Automation](https://matman26.github.io/posts/git-distributed-version-control)
