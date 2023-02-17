@@ -6,6 +6,10 @@ permalink: /posts/ttp-advanced-text-parsing
 image: /assets/images/ttp-parser.svg
 ---
 
+<head>
+  <link rel="stylesheet" href="/static/custom.css">
+</head>
+
 # Advanced Text Parsing with TTP
 In a [previous post][ttp-post] we took a brief look at Template Text Parser (TTP),
 a text parsing library for Python. TTP is a simple-to-use yet powerful
@@ -98,6 +102,10 @@ your needs, here are a few functions and usage patterns:
 | Function              | Description                                                           | Usage                                                                                            |
 |-----------------------|-----------------------------------------------------------------------|--------------------------------------------------------------------------------------------------|
 | `copy(variable_name)` | Creates a copy of current match variable value under another variable | user@email.com -> {%raw%}{{ domain \| copy('full-email') \| split('@') \| item(-1) }} {%endraw%} |
+| Paragraph             | Text                                                                  |                                                                                                  |
+| Paragraph             | Text                                                                  |                                                                                                  |
+| Paragraph             | Text                                                                  |                                                                                                  |
+| Paragraph             | Text                                                                  |                                                                                                  |
 | Paragraph             | Text                                                                  |                                                                                                  |
 
 
