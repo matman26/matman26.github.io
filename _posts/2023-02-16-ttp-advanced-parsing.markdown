@@ -9,8 +9,8 @@ image: /assets/images/ttp-parser.svg
 # Advanced Text Parsing with TTP
 In a [previous post][ttp-post] we took a brief look at Template Text Parser (TTP),
 a text parsing library for Python. TTP is a simple-to-use yet powerful
-parsing libraries that can be used to extract structured data from
-text output such as configuration files and show commands on network
+parsing library that can be used to extract structured data from
+text output such as configuration files and show commands from network
 devices.
 
 In this article, we'll skip straight to the chase and begin looking
@@ -34,12 +34,14 @@ values, TTP ships with a few of regex patterns that fit regular network device u
 In addition to using the above patterns, custom patterns can be specified using the `re`
 filter.
 
-```
+{% highlight html %}
+{% raw %}
 <doc>
-- Doc tags can be used to specify documentation that is ignored by the parser
-- Input tags can be used to specify parsing inputs directly within the template file
+- Doc tags can be used to specify documentation
+  that is ignored by the parser
+- Input tags can be used to specify parsing
+  inputs directly within the template file
 </doc>
-
 <input load="text">
 interface Ethernet0
   description Management Interface
@@ -55,16 +57,17 @@ interface BundleEther10
   description Aggregation
   ip address 172.16.0.1 255.255.0.0
 </input>
-
 <group>
 interface {{ name | re("Ethernet\d+") }}
   description {{ description | ORPHRASE }}
   ip address {{ ip-address | IP }} {{ prefix | IP }}
 !{{_end_}}
 </group>
-```
+{% endraw %}
+{% endhighlight %}
 
 The above, for example, yields:
+
 ```json
 [
     [
@@ -82,18 +85,19 @@ The above, for example, yields:
 ]
 ```
 
-Note that by using `re("Ethernet\d+")` as a match pattern we were to parse only for _Ethernet_
+Note that by using `re("Ethernet\d+")` as a match pattern we parsed only for _Ethernet_
 interfaces (in this case, _GigabitEthernet_ did not fully satisfy the pattern and was therefore
 not matched). The `ORPHRASE` and `IP` patterns were also used to capture the description and
-IP Address data.
+IP Address data, respectively.
 
 ## Working with Groups
-The as we saw previously, `group` tags allow us to organize match variables into nested data
+As we saw previously, `group` tags allow us to organize match variables into nested data
 structures to better comply with our data models. They can be named either statically or
 dynamically, which means they can behave either like YANG container nodes or YANG list nodes,
 respectively.
 
-```
+{% highlight html %}
+{% raw %}
 <input load="text">
 interface Ethernet0
   description Management Interface
@@ -118,7 +122,8 @@ interface {{ name }}
 !{{_end_}}
  </group>
 </group>
-```
+{% endraw %}
+{% endhighlight %}
 
 The above example differs from our original parser in the following ways:
 - Our result structure has now has a top-level key named 'interfaces'
@@ -154,14 +159,16 @@ structures (like 'interfaces' followed by the interface name), instead of using
 nested group tags we can use _path notation_ by specifying group
 names with the `.` delimiter. The parser below behaves identically to the one we just shown.
 
-```
+{% highlight html %}
+{% raw %}
 <group name='interfaces.{{name}}'>
 interface {{ name }}
   description {{ description | ORPHRASE }}
   ip address {{ ip-address | IP }} {{ prefix | IP }}
 !{{_end_}}
 </group>
-```
+{% endraw %}
+{% endhighlight %}
 
 Path notation can be used to specify an arbitrary number of nesting layers and can contain
 both static and dynamic key names.
@@ -173,11 +180,129 @@ parsing engine to add new entries either as keys in a dictionary or entries on a
 - The `*` suffix can be added to a path item to force its child nodes to become a list
 - The `**` suffix can be added to a path item to force its child nodes to become a dictionary
 
+{% highlight html %}
+{% raw %}
+<input load="text">
+interface Ethernet0
+  description Management Interface
+  ip address 192.168.1.1 255.255.255.0
+!
+interface Ethernet2
+  description Test
+!
+interface GigabitEthernet1
+  description Service Interface
+!
+interface BundleEther10
+  description Aggregation
+  ip address 172.16.0.1 255.255.0.0
+</input>
+
+<group name='config.interfaces.Gigabit*'>
+interface {{ name }}
+  description {{ description | ORPHRASE }}
+  ip address {{ ip-address | IP }} {{ prefix | IP }}
+!{{_end_}}
+</group>
+{% endraw %}
+{% endhighlight %}
 
 
+## Lookup Tables
+TTP Offers support for Lookup Tables, which behave as their name implies: we can use lookup
+tables to map our match values into certain relevant information coming from external sources.
+
+For example, let's suppose we're parsing physical PE interfaces in an L3VPN setup. Each interface
+should be under a VRF that maps to a specific customer.
+
+```
+interface GigabitEthernet1/1
+  description ACME
+  vrf ACME
+  ip address 172.16.0.1
+!
+interface GigabitEthernet1/2
+  description BETA
+  vrf BETA
+  ip address 172.16.0.1
+!
+```
+
+Suppose that when parsing these interfaces for their VRFs, we want to quickly be able to
+map that VRF to the customer's remote-as for reference. We can achieve this with a lookup
+table that maps customer names to their specific ASN:
+
+{% highlight html %}
+  {% raw %}
+<doc>
+- The lookup tag can be used to read data in csv and ini format
+  - In this case, customers ACME and BETA have their asn
+    and potentially some extra meta-data on the source table
+- The lookup function then treats the table as a dictionary search
+  - All columns in the lookup table will be dumped
+    under the key 'customer-details'
+
+In this example, we use the customer-list table in order to get
+the AS Number for a given customer name.
+</doc>
+<lookup name="customer-list" load="csv">
+vrf,asn,foo
+ACME,65101,bar
+BETA,65102,baz
+</lookup>
+
+<input load="text">
+interface GigabitEthernet1/1
+  description ACME
+  vrf ACME
+  ip address 172.16.0.1 255.255.0.0
+!
+interface GigabitEthernet1/2
+  description BETA
+  vrf BETA
+  ip address 172.16.0.1 255.255.0.0
+!
+</input>
+
+<group name="interfaces.{{interface-name}}">
+interface {{ interface-name }}
+  description {{ description | ORPHRASE }}
+  vrf {{ vrf | lookup("customer-list", add_field="customer-details") }}
+  ip address {{ address | IP }} {{ netmask | IP }}
+!
+</group>
+  {% endraw %}
+{% endhighlight %}
 
 
-
+```json
+[
+    {
+        "interfaces": {
+            "GigabitEthernet1/1": {
+                "address": "172.16.0.1",
+                "customer-details": {
+                    "asn": "65101",
+                    "foo": "bar"
+                },
+                "description": "ACME",
+                "netmask": "255.255.0.0",
+                "vrf": "ACME"
+            },
+            "GigabitEthernet1/2": {
+                "address": "172.16.0.1",
+                "customer-details": {
+                    "asn": "65102",
+                    "foo": "baz"
+                },
+                "description": "BETA",
+                "netmask": "255.255.0.0",
+                "vrf": "BETA"
+            }
+        }
+    }
+]
+```
 
 
 
