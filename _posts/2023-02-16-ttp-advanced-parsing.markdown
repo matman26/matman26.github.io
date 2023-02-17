@@ -90,6 +90,17 @@ interfaces (in this case, _GigabitEthernet_ did not fully satisfy the pattern an
 not matched). The `ORPHRASE` and `IP` patterns were also used to capture the description and
 IP Address data, respectively.
 
+### Match Variable Functions
+While we can use macros to define custom python functions to apply on variables, a few functions
+are also pre-defined and can be used to validate and/or transform match variables according to
+your needs, here are a few functions and usage patterns:
+
+| Function              | Description                                                           | Usage                                                                                            |
+|-----------------------|-----------------------------------------------------------------------|--------------------------------------------------------------------------------------------------|
+| `copy(variable_name)` | Creates a copy of current match variable value under another variable | user@email.com -> {%raw%}{{ domain \| copy('full-email') \| split('@') \| item(-1) }} {%endraw%} |
+| Paragraph             | Text                                                                  |                                                                                                  |
+
+
 ## Working with Groups
 As we saw previously, `group` tags allow us to organize match variables into nested data
 structures to better comply with our data models. They can be named either statically or
@@ -303,6 +314,7 @@ interface {{ interface-name }}
     }
 ]
 ```
+
 
 
 
