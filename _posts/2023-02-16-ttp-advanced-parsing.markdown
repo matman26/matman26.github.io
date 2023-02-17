@@ -99,14 +99,14 @@ While we can use macros to define custom python functions to apply on variables,
 are also pre-defined and can be used to validate and/or transform match variables according to
 your needs, here are a few functions and usage patterns:
 
-| Function            | Description                                                           | Usage                                                                                            |
-|---------------------|-----------------------------------------------------------------------|--------------------------------------------------------------------------------------------------|
-| copy(variable_name) | Creates a copy of current match variable value under another variable | user@email.com -> {%raw%}{{ domain \| copy('full-email') \| split('@') \| item(-1) }} {%endraw%} |
-| Paragraph           | Text                                                                  |                                                                                                  |
-| Paragraph           | Text                                                                  |                                                                                                  |
-| Paragraph           | Text                                                                  |                                                                                                  |
-| Paragraph           | Text                                                                  |                                                                                                  |
-| Paragraph           | Text                                                                  |                                                                                                  |
+| Function            | Description                                                                                                                                                                       |
+|---------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| copy(variable_name) | Creates a copy of current match variable value under another variable <br> user@email.com -> {%raw%}{{ domain \| copy('full-email') \| split('@') \| item(-1) }} {%endraw%} |
+| Paragraph           | Text                                                                                                                                                                              |
+| Paragraph           | Text                                                                                                                                                                              |
+| Paragraph           | Text                                                                                                                                                                              |
+| Paragraph           | Text                                                                                                                                                                              |
+| Paragraph           | Text                                                                                                                                                                              |
 
 
 ## Working with Groups
