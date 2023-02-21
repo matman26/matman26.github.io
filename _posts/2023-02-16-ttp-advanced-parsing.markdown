@@ -101,7 +101,7 @@ your needs, here are a few functions and usage patterns:
 
 | Function                | Description                                                                                                                                                                 |
 |-------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| copy(variable\_name)    | Creates a copy of current match variable value under another variable <br> user@email.com -> {%raw%}{{ domain \| copy('full-email') \| split('@') \| item(-1) }} {%endraw%} |
+| copy(variable\_name)    | Creates a copy of current match variable value under another variable <br> user@email.com -> {{ domain \| copy('full-email') \| split('@') \| item(-1) }} |
 | default(default\_value) | Sets the defaults value for match variable if none is matched <br>                                                                                                          |
 | Paragraph               | Text                                                                                                                                                                        |
 | Paragraph               | Text                                                                                                                                                                        |
